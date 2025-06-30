@@ -1,0 +1,93 @@
+import tkinter as tk # Importa la biblioteca tkinter para crear la interfaz gráfica
+import random
+
+class MiLinea: # Clase que representa una línea con coordenadas de sus extremos
+    def __init__(self, x1=0, y1=0, x2=0, y2=0): # Inicializa una línea con coordenadas de sus extremos
+        self.__x1 = x1
+        self.__y1 = y1 # Coordenadas del primer extremo de la línea
+        self.__x2 = x2 
+        self.__y2 = y2 # Coordenadas de los extremos de la línea
+
+    def establecerX1(self, x): self.__x1 = x
+    def establecerY1(self, y): self.__y1 = y
+    def establecerX2(self, x): self.__x2 = x
+    def establecerY2(self, y): self.__y2 = y # Establece las coordenadas de los extremos de la línea
+    def obtenerX1(self): return self.__x1
+    def obtenerY1(self): return self.__y1 # Obtiene las coordenadas de los extremos de la línea
+    def obtenerX2(self): return self.__x2
+    def obtenerY2(self): return self.__y2
+
+    def dibujar(self, canvas):
+        canvas.create_line(self.__x1, self.__y1, self.__x2, self.__y2) # Dibuja la línea en el canvas
+
+class MiRect:
+    def __init__(self, x=0, y=0, ancho=0, alto=0): # Inicializa un rectángulo con coordenadas y dimensiones
+        self.__x = x
+        self.__y = y
+        self.__ancho = max(0, ancho) # Asegura que el ancho sea no negativo
+        self.__alto = max(0, alto) # Asegura que el alto sea no negativo
+
+    def establecerX(self, x): self.__x = x # Establece las coordenadas y dimensiones del rectángulo
+    def establecerY(self, y): self.__y = y
+    def establecerAncho(self, a): self.__ancho = max(0, a) # Establece el ancho del rectángulo, asegurándose de que sea no negativo
+    def establecerAlto(self, h): self.__alto = max(0, h)
+    def obtenerX(self): return self.__x # Obtiene las coordenadas y dimensiones del rectángulo
+    def obtenerY(self): return self.__y
+    def obtenerAncho(self): return self.__ancho # Obtiene las coordenadas y dimensiones del rectángulo
+    def obtenerAlto(self): return self.__alto
+
+    def dibujar(self, canvas):
+        canvas.create_rectangle(self.__x, self.__y, self.__x + self.__ancho, self.__y + self.__alto)
+
+class MiOvalo:
+    def __init__(self, x=0, y=0, ancho=0, alto=0): # Clase que representa un óvalo con coordenadas y dimensiones
+        self.__x = x # Inicializa un óvalo con coordenadas y dimensiones
+        self.__y = y # Coordenadas del óvalo
+        self.__ancho = max(0, ancho) # Asegura que el ancho sea no negativo
+        self.__alto = max(0, alto) # Asegura que el alto sea no negativo
+
+    def establecerX(self, x): self.__x = x
+    def establecerY(self, y): self.__y = y
+    def establecerAncho(self, a): self.__ancho = max(0, a) # Establece el ancho del óvalo, asegurándose de que sea no negativo
+    def establecerAlto(self, h): self.__alto = max(0, h) # Establece el alto del óvalo, asegurándose de que sea no negativo
+    def obtenerX(self): return self.__x
+    def obtenerY(self): return self.__y
+    def obtenerAncho(self): return self.__ancho
+    def obtenerAlto(self): return self.__alto
+
+    def dibujar(self, canvas):
+        canvas.create_oval(self.__x, self.__y, self.__x + self.__ancho, self.__y + self.__alto) # Dibuja el óvalo en el canvas
+
+class CanvasApp: # Clase principal de la aplicación que maneja el canvas y los botones
+    def __init__(self, root): 
+        self.root = root # Inicializa la ventana principal de la aplicación
+        self.root.title("App de Dibujo") # Título de la ventana principal
+        self.canvas = tk.Canvas(self.root, width=600, height=400, bg="white") # Crea un canvas blanco de 600x400 píxeles
+        self.canvas.pack() # Añade el canvas a la ventana principal
+
+        self.boton = tk.Button(self.root, text="Recargar Figuras", command=self.generar_figuras) # Botón para recargar las figuras en el canvas
+        self.boton.pack() # Botón para recargar las figuras en el canvas
+
+        self.generar_figuras() # Llama a la función para generar y dibujar las figuras al iniciar la aplicación
+
+    def generar_figuras(self): 
+        self.canvas.delete("all") # Limpia el canvas antes de dibujar nuevas figuras
+        self.lineas = [MiLinea(random.randint(0, 600), random.randint(0, 400), 
+                               random.randint(0, 600), random.randint(0, 400)) for _ in range(5)] # Genera 5 líneas con coordenadas aleatorias
+        self.rects = [MiRect(random.randint(0, 500), random.randint(0, 300), # Genera 5 rectángulos con coordenadas y dimensiones aleatorias
+                             random.randint(20, 100), random.randint(20, 100)) for _ in range(5)]
+        self.ovalos = [MiOvalo(random.randint(0, 500), random.randint(0, 300), # Genera 5 óvalos con coordenadas y dimensiones aleatorias
+                               random.randint(20, 100), random.randint(20, 100)) for _ in range(5)]
+
+        for l in self.lineas: # Dibuja las líneas en el canvas
+            l.dibujar(self.canvas) # Dibuja los rectángulos y óvalos en el canvas
+        for r in self.rects:
+            r.dibujar(self.canvas)
+        for o in self.ovalos:
+            o.dibujar(self.canvas)
+
+if __name__ == "__main__": # Punto de entrada del programa
+    root = tk.Tk() # Crea la ventana principal de la aplicación
+    app = CanvasApp(root) # Crea una instancia de la aplicación
+    root.mainloop() # Inicia el bucle principal de la aplicación
+    # El programa se ejecuta hasta que se cierra la ventana
